@@ -12,7 +12,8 @@ class HouseHTMLParser(HTMLParser):
         self.id = id
 
     def handle_starttag(self, tags, attrs):
-        f = open(self.id, 'a')
+        file_name ="file/%s" % self.id
+        f = open(file_name, 'a')
         content = "tags:%s \n\t attrs:%s\n" % (tags , attrs)
         f.write(content)
         f.close()
@@ -34,11 +35,11 @@ class IDHTMLParser(HTMLParser):
 def spider_house(id):
     url = "https://bj.lianjia.com/ershoufang/%s.html" % id
     req = urllib2.Request(url)
-    res = urllib2.urlopen(request)
+    res = urllib2.urlopen(req)
     hs = HouseHTMLParser(id)
     content = res.read()
     hs.feed(content)
-    file_name='%s_text' % id
+    file_name='file/%s_text' % id
     f = open(file_name, 'w')
     f.write(content)
     f.close()
