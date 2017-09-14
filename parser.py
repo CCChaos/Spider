@@ -1,38 +1,38 @@
+# coding=utf-8
 from bs4 import BeautifulSoup
 import Queue
 import re
+from parser_house import ParseNode4Communite
+from parser_house import ParseNode4OVHouseInfo
+from parser_house import ParseNode4OVPrice
 
 def ParseHome4ID(homepage):
-    id_queue = Queue.Queue()
+    id_dict = {}
     soup = BeautifulSoup(homepage, "lxml")
     for link in soup.find_all('a'):
         code = link.get('data-housecode')
         if code != None:
-            id_queue.put(code)
+            id_dict[code] = None
 
-    return id_queue
-
-def ParseNode4Communite(tag_commu):
-    communite = []
-    for child in tag_commu.children:
-        if child.name == 'a':
-            href = child.get('href')
-            if href == None:
-                continue
-            m = re.match(r'^\/xiaoqu\/(\d*)\/$', href)
-            if m == None:
-                continue
-            communite.append(['id', m.group(1)])
-            communite.append(['name',child.string])
-    return communite
+    return id_dict
 
 def ParseHouse4Info(housepage):
-    house = []
+    ret_house = {}
     soup = BeautifulSoup(housepage, "lxml")
-    div = soup.find(attrs={'class':"aroundInfo"})
-    if div != None:
-        communityName = div.find(attrs={'class':'communityName'})
-        if communityName != None:
-            community = ParseNode4Communite(communityName)
-            house.append(('community', community))
-    return house
+    div = soup.find(attrs={'class':'overview'})
+    if div == None:
+        return ret_house
+    content = div.find(attrs={'class':'content'})
+    if content == None:
+        return ret_house
+
+    ov_price = content.find(attrs={'class':'price'})
+    if ov_price != None:
+        ret_price = ParseNode4OVPrice(ov_price)
+        ret_house.update(ret_price)
+
+    ov_houseInfo = content.find(attrs={'class':'houseInfo'})
+    if ov_houseInfo != None:
+        ret_houseInfo = ParseNode4OVHouseInfo(ov_houseInfo)
+        ret_house.update(ret_houseInfo)
+    return ret_house
