@@ -1,65 +1,23 @@
-import urllib2
-from HTMLParser import HTMLParser
-import Queue
-import threading
+# coding:utf-8
+import datetime
+from sql import SQLCreateTable
+from page_worker import WorkMainPage
 
-id_query = Queue.Queue()
-lock = threading.Lock()
+house_table = {'id':id,
+       'overview_price_total':'',
+      'overview_houseInfo_room_mainInfo':'',
+      'overview_houseInfo_room_subInfo':'',
+      'overview_houseInfo_area_mainInfo':'',
+      'overview_houseInfo_area_subInfo':''}
 
-class HouseHTMLParser(HTMLParser):
-    def __init__(self, id):
-        HTMLParser.__init__(self)
-        self.id = id
+# 创建数据表
+table_name = datetime.datetime.now().strftime('%Y%m%d_%H%M%S_lianjia')
+if SQLCreateTable(house_table, table_name) == False:
+    print 'Create Table Error'
+    exit()
 
-    def handle_starttag(self, tags, attrs):
-        file_name ="file/%s" % self.id
-        f = open(file_name, 'a')
-        content = "tags:%s \n\t attrs:%s\n" % (tags , attrs)
-        f.write(content)
-        f.close()
-
-class IDHTMLParser(HTMLParser):
-    
-    def handle_starttag(self, tags, attrs):
-        if tags == 'a':
-            global id_query
-            for attr in attrs:
-                if attr[0] == 'data-housecode':
-                    lock.acquire()
-                    try:
-                        id_query.put(attr[1])
-                    finally:
-                        lock.release()
-
-
-def spider_house(id):
-    url = "https://bj.lianjia.com/ershoufang/%s.html" % id
-    req = urllib2.Request(url)
-    res = urllib2.urlopen(req)
-    hs = HouseHTMLParser(id)
-    content = res.read()
-    hs.feed(content)
-    file_name='file/%s_text' % id
-    f = open(file_name, 'w')
-    f.write(content)
-    f.close()
-
-
-def thread_spider_house():
-    global id_query
-    i = 0
-    while id_query.empty() == False:
-        id = id_query.get()
-        spider_house(id)
-        i=i+1
-        if i > 5:
-            break
-
-
-
-request = urllib2.Request("https://bj.lianjia.com/ershoufang/pg2/")
-response = urllib2.urlopen(request)
-content = response.read()
-py = IDHTMLParser()
-py.feed(content)
-thread_spider_house()
+i = 1
+while i <= 1:
+    print 'Working on Page:%d  ============>' % i
+    WorkMainPage(i, table_name)
+    i = i + 1
