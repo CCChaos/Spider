@@ -5,6 +5,7 @@ import re
 from parser_house import ParseNode4Communite
 from parser_house import ParseNode4OVHouseInfo
 from parser_house import ParseNode4OVPrice
+from parser_house import ParseNode4OVAroundInfo
 
 def ParseHome4ID(homepage):
     id_dict = {}
@@ -35,4 +36,8 @@ def ParseHouse4Info(housepage):
     if ov_houseInfo != None:
         ret_houseInfo = ParseNode4OVHouseInfo(ov_houseInfo)
         ret_house.update(ret_houseInfo)
+    ov_aroundInfo = content.find(attrs={'class','aroundInfo'})
+    if ov_aroundInfo != None:
+        ret_aroundInfo = ParseNode4OVAroundInfo(ov_aroundInfo)
+        ret_house.update(ov_aroundInfo)
     return ret_house

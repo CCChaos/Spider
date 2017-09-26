@@ -23,10 +23,6 @@ def WorkMainPage(page_index, table_name):
     request = urllib2.Request(url, None, req_header)
     response = urllib2.urlopen(request)
     content = response.read()
-    f = open('tmp2','w')
-    f.write(content)
-    f.close()
-    return
     id_dict = ParseHome4ID(content)
 
     for id in id_dict.iterkeys():

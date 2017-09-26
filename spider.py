@@ -4,11 +4,16 @@ from sql import SQLCreateTable
 from page_worker import WorkMainPage
 
 house_table = {'id':id,
-       'overview_price_total':'',
-      'overview_houseInfo_room_mainInfo':'',
-      'overview_houseInfo_room_subInfo':'',
-      'overview_houseInfo_area_mainInfo':'',
-      'overview_houseInfo_area_subInfo':''}
+'overview_price_total':'',
+'overview_houseInfo_room_mainInfo':'',
+'overview_houseInfo_room_subInfo':'',
+'overview_houseInfo_area_mainInfo':'',
+'overview_houseInfo_area_subInfo':'',
+'overview_aroundInfo_cummunityID':'',
+'overview_aroundInfo_communityName':'',
+'overview_aroundInfo_areaName1':'',
+'overview_aroundInfo_areaName2':'',
+'overview_aroundInfo_houseRecordID':''}
 
 # 创建数据表
 table_name = datetime.datetime.now().strftime('%Y%m%d_%H%M%S_lianjia')
