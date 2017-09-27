@@ -11,8 +11,7 @@ house_table = {'id':id,
 'overview_houseInfo_area_subInfo':'',
 'overview_aroundInfo_cummunityID':'',
 'overview_aroundInfo_communityName':'',
-'overview_aroundInfo_areaName1':'',
-'overview_aroundInfo_areaName2':'',
+'overview_aroundInfo_areaName':'',
 'overview_aroundInfo_houseRecordID':''}
 
 # 创建数据表

@@ -36,29 +36,24 @@ def ParseNode4OVHouseInfo(tag_houseInfo):
 def ParseNode4OVAroundInfo(tag_aroundInfo):
     around_info = {'overview_aroundInfo_cummunityID':'',
     'overview_aroundInfo_communityName':'',
-    'overview_aroundInfo_areaName1':'',
-    'overview_aroundInfo_areaName2':'',
+    'overview_aroundInfo_areaName':'',
     'overview_aroundInfo_houseRecordID':''}
-    div_community = tag_aroundInfo.find('communityName')
+    div_community = tag_aroundInfo.find(attrs={'class':'communityName'})
     if not div_community is None:
         ret_comm = ParseNode4Communite(div_community)
         around_info['overview_aroundInfo_cummunityID'] = ret_comm['id']
         around_info['overview_aroundInfo_communityName'] = ret_comm['name']
-    div_area = tag_aroundInfo.find('areaNanme')
+    div_area = tag_aroundInfo.find(attrs={'class':'areaName'})
     if not div_area is None:
         span_info = div_area.find('span',attrs={'class':'info'})
         if not span_info is None:
-            i = 1
             for child in span_info.children:
-                key = 'overview_aroundInfo_areaName%d' % i
-                around_info[key] = child.string
-                i = i + 1
-    div_houseRecord = tag_aroundInfo.find('houseRecord')
+                around_info['overview_aroundInfo_areaName'] = '%s\t%s' % ( around_info['overview_aroundInfo_areaName'], child.string )
+    div_houseRecord = tag_aroundInfo.find(attrs={'class':'houseRecord'})
     if not div_houseRecord is None:
         span_info = div_houseRecord.find('span',attrs={'class':'info'})
         if not span_info is None:
             around_info['overview_aroundInfo_houseRecordID']=span_info.string
-    
     return around_info
 
 def ParseNode4Communite(tag_commu):
@@ -68,7 +63,7 @@ def ParseNode4Communite(tag_commu):
     href = a.get('href')
     if href is None:
         return None
-    m = re.match(r'^\/xiaoqu\/(\d*)\/$', href)
+    m = re.match(r'.*\/xiaoqu\/(\d*)\/$', href)
     if m is None:
         return None
     communite = dict({'id':m.group(1), 'name':a.string})

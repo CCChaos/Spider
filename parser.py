@@ -39,5 +39,13 @@ def ParseHouse4Info(housepage):
     ov_aroundInfo = content.find(attrs={'class','aroundInfo'})
     if ov_aroundInfo != None:
         ret_aroundInfo = ParseNode4OVAroundInfo(ov_aroundInfo)
-        ret_house.update(ov_aroundInfo)
+        ret_house.update(ret_aroundInfo)
     return ret_house
+
+
+if __name__ == '__main__':
+    f = open('file/test.txt','r');
+    content = f.read()
+    f.close()
+    ret = ParseHouse4Info(content)
+    print ret
